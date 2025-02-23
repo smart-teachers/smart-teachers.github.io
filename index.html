@@ -1,7 +1,4 @@
-فيما يلي الكود الكامل بعد إضافة الميزات المتقدمة كما طلبت:
-
-
----
+فيما يلي الكود الكامل محدثًا لإزالة مشكلة الشريط/الخط الجانبي، حيث تمت إضافة تهيئة (html, body) لإزالة الهوامش الافتراضية وتحديد الأبعاد، وكذلك تمت إزالة خاصية overflow: hidden; من .container:
 
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -10,6 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>حاسبة العمر المتطورة</title>
   <style>
+    /* إعادة ضبط هوامش وأبعاد الصفحة */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
     :root {
       --primary: #2196F3;
       --secondary: #4CAF50;
@@ -17,11 +22,11 @@
       --error: #f44336;
       --bg: #f5f7fa;
     }
+
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, var(--bg), #c3cfe2);
@@ -31,36 +36,43 @@
       align-items: center;
       padding: 20px;
     }
+
     .container {
       background: white;
       border-radius: 20px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 800px;
-      overflow: hidden;
+      /* تمت إزالة overflow: hidden; */
     }
+
     .header {
       background: linear-gradient(45deg, var(--primary), var(--secondary));
       padding: 30px;
       color: white;
       text-align: center;
     }
+
     .header h1 {
       margin: 0;
       font-size: 2em;
     }
+
     .content {
       padding: 30px;
     }
+
     .input-group {
       margin-bottom: 20px;
     }
+
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
       color: #333;
     }
+
     input[type="date"],
     select {
       width: 100%;
@@ -70,18 +82,21 @@
       font-size: 16px;
       transition: all 0.3s;
     }
+
     input[type="date"]:focus,
     select:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
       outline: none;
     }
+
     .settings {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       margin: 20px 0;
     }
+
     button {
       background: linear-gradient(45deg, var(--primary), var(--secondary));
       color: white;
@@ -95,26 +110,31 @@
       transition: all 0.3s;
       margin-bottom: 20px;
     }
+
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
     }
+
     .result {
       margin-top: 30px;
       display: none;
     }
+
     .result-card {
       background: #f8f9fa;
       border-radius: 15px;
       padding: 20px;
       margin-bottom: 20px;
     }
+
     .result-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 15px;
       margin-top: 20px;
     }
+
     .result-item {
       text-align: center;
       padding: 15px;
@@ -122,12 +142,14 @@
       border-radius: 10px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
+
     .result-value {
       font-size: 2em;
       color: var(--primary);
       font-weight: bold;
       margin: 10px 0;
     }
+
     .next-birthday {
       background: #fff3e0;
       padding: 15px;
@@ -136,6 +158,7 @@
       color: #ff9800;
       margin-top: 20px;
     }
+
     .error {
       color: var(--error);
       margin-top: 5px;
@@ -144,6 +167,7 @@
       border-radius: 8px;
       background: rgba(244, 67, 54, 0.1);
     }
+
     @media (max-width: 600px) {
       .container {
         margin: 10px;
@@ -342,6 +366,7 @@
 
       // عرض النتائج للمدخل الأساسي
       displayResults(ageDetails);
+
       // حساب التاريخ الهجري وعرضه
       const hijri = gregorianToHijri(birthDate);
       const lang = document.getElementById('language').value;
@@ -413,7 +438,7 @@
       document.getElementById('years').textContent = details.years;
       document.getElementById('months').textContent = details.months;
       document.getElementById('days').textContent = details.days;
-      
+
       const precision = document.getElementById('precision').value;
       if (precision === 'detailed' || precision === 'advanced') {
         document.getElementById('hoursItem').style.display = 'block';
@@ -450,6 +475,7 @@
         updateCountdown(nextBirthday);
       }, 1000);
     }
+
     function updateCountdown(nextBirthday) {
       const now = new Date().getTime();
       const distance = nextBirthday.getTime() - now;
@@ -462,7 +488,8 @@
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      document.getElementById('countdown').textContent = `باقي: ${days} أيام، ${hours} ساعات، ${minutes} دقائق، ${seconds} ثواني`;
+      document.getElementById('countdown').textContent =
+        `باقي: ${days} أيام، ${hours} ساعات، ${minutes} دقائق، ${seconds} ثواني`;
     }
 
     // دالة لتحويل التاريخ الميلادي إلى هجري (تقريبية)
@@ -509,6 +536,7 @@
       const venusAge = (earthAge / 0.61519726).toFixed(2);
       const marsAge = (earthAge / 1.8808158).toFixed(2);
       const jupiterAge = (earthAge / 11.862615).toFixed(2);
+
       const ctx = document.getElementById('ageChart').getContext('2d');
       if(window.ageChart) { window.ageChart.destroy(); }
       window.ageChart = new Chart(ctx, {
@@ -528,6 +556,7 @@
         }
       });
     }
+
     function displayPlanetAgesComparison(ages) {
       const labels = ages.map((age, index) => `شخص ${index+1}`);
       const ctx = document.getElementById('ageChart').getContext('2d');
@@ -559,25 +588,21 @@
 </body>
 </html>
 
+ما الذي تغيّر؟
 
----
-
-هذا الكود يتضمن:
-
-حساب العمر بالتفصيل (سنوات، شهور، أيام، ساعات، دقائق، ثواني) بناءً على مستوى الدقة.
-
-إمكانية إضافة تواريخ ميلاد إضافية للمقارنة.
-
-تحويل التاريخ الميلادي إلى هجري وعرضه.
-
-عدّاد تنازلي يتحدّث كل ثانية حتى عيد الميلاد.
-
-عرض معلومة تاريخية بناءً على سنة الميلاد.
-
-مقارنة عمر الكواكب باستخدام مكتبة Chart.js.
-
-دعم تبديل اللغة بين العربية والإنجليزية.
+1. إزالة خاصية overflow: hidden; من .container لضمان عدم قصّ المحتوى.
 
 
-يمكنك تعديل أو تطوير الكود بما يتناسب مع احتياجات مشروعك.
+2. إضافة التنسيق التالي في بداية ملف الـCSS لضبط هوامش وأبعاد الصفحة:
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+مع هذه التعديلات، يفترض أن يختفي الخط/الشريط الجانبي الذي ظهر في الصورة المرفقة.
 
