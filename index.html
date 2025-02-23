@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>حاسبة العمر المتقدمة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .result-detail {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .settings {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>حاسبة العمر المتقدمة</h1>
+        
+        <div class="input-group">
+            <label for="birthDate">تاريخ الميلاد:</label>
+            <input type="date" id="birthDate" required>
+        </div>
+        
+        <div class="settings">
+            <div class="input-group">
+                <label for="calendar">نظام التقويم:</label>
+                <select id="calendar">
+                    <option value="gregorian">ميلادي</option>
+                    <option value="hijri">هجري</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="precision">مستوى الدقة:</label>
+                <select id="precision">
+                    <option value="years">سنوات فقط</option>
+                    <option value="months">شهور وسنوات</option>
+                    <option value="days">أيام وشهور وسنوات</option>
+                    <option value="detailed">تفصيلي (مع الساعات والدقائق)</option>
+                </select>
+            </div>
+        </div>
+        
+        <button onclick="calculateAge()">احسب العمر</button>
+        
+        <div class="result" id="result">
+            <h2>نتيجة حساب العمر</h2>
+            <div class="result-detail" id="yearsResult"></div>
+            <div class="result-detail" id="monthsResult"></div>
+            <div class="result-detail" id="daysResult"></div>
+            <div class="result-detail" id="detailedResult"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            const birthDate = new Date(document.getElementById('birthDate').value);
+            const today = new Date();
+            const precision = document.getElementById('precision').value;
+            
+            if (isNaN(birthDate.getTime())) {
+                alert('الرجاء إدخال تاريخ ميلاد صحيح');
+                return;
+            }
+            
+            const yearsDiff = today.getFullYear() - birthDate.getFullYear();
+            const monthsDiff = today.getMonth() - birthDate.getMonth();
+            const daysDiff = today.getDate() - birthDate.getDate();
+            
+            let years = yearsDiff;
+            let months = monthsDiff;
+            let days = daysDiff;
+            
+            if (daysDiff < 0) {
+                months--;
+                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, birthDate.getDate());
+                days = Math.floor((today - lastMonth) / (1000 * 60 * 60 * 24));
+            }
+            
+            if (monthsDiff < 0) {
+                years--;
+                months = 12 + monthsDiff;
+            }
+            
+            const result = document.getElementById('result');
+            const yearsResult = document.getElementById('yearsResult');
+            const monthsResult = document.getElementById('monthsResult');
+            const daysResult = document.getElementById('daysResult');
+            const detailedResult = document.getElementById('detailedResult');
+            
+            result.style.display = 'block';
+            
+            // تنظيف النتائج السابقة
+            yearsResult.textContent = '';
+            monthsResult.textContent = '';
+            daysResult.textContent = '';
+            detailedResult.textContent = '';
+            
+            switch(precision) {
+                case 'years':
+                    yearsResult.textContent = `العمر: ${years} سنة`;
+                    break;
+                    
+                case 'months':
+                    yearsResult.textContent = `العمر: ${years} سنة`;
+                    monthsResult.textContent = `و ${months} شهر`;
+                    break;
+                    
+                case 'days':
+                    yearsResult.textContent = `العمر: ${years} سنة`;
+                    monthsResult.textContent = `و ${months} شهر`;
+                    daysResult.textContent = `و ${days} يوم`;
+                    break;
+                    
+                case 'detailed':
+                    const hours = today.getHours();
+                    const minutes = today.getMinutes();
+                    yearsResult.textContent = `العمر: ${years} سنة`;
+                    monthsResult.textContent = `و ${months} شهر`;
+                    daysResult.textContent = `و ${days} يوم`;
+                    detailedResult.textContent = `و ${hours} ساعة و ${minutes} دقيقة`;
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
