@@ -1,301 +1,583 @@
+فيما يلي الكود الكامل بعد إضافة الميزات المتقدمة كما طلبت:
+
+
+---
+
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة العمر المتطورة</title>
-    <style>
-        :root {
-            --primary: #2196F3;
-            --secondary: #4CAF50;
-            --accent: #FF4081;
-            --error: #f44336;
-            --bg: #f5f7fa;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--bg), #c3cfe2);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            padding: 30px;
-            color: white;
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 2em;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        input[type="date"],
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        input[type="date"]:focus,
-        select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-            outline: none;
-        }
-
-        .settings {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        button {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
-        }
-
-        .result {
-            margin-top: 30px;
-            display: none;
-        }
-
-        .result-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .result-item {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .result-value {
-            font-size: 2em;
-            color: var(--primary);
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .next-birthday {
-            background: #fff3e0;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            color: #ff9800;
-            margin-top: 20px;
-        }
-
-        .error {
-            color: var(--error);
-            margin-top: 5px;
-            display: none;
-            padding: 10px;
-            border-radius: 8px;
-            background: rgba(244, 67, 54, 0.1);
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                margin: 10px;
-            }
-            .header h1 {
-                font-size: 1.5em;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حاسبة العمر المتطورة</title>
+  <style>
+    :root {
+      --primary: #2196F3;
+      --secondary: #4CAF50;
+      --accent: #FF4081;
+      --error: #f44336;
+      --bg: #f5f7fa;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--bg), #c3cfe2);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 800px;
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      padding: 30px;
+      color: white;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+    .content {
+      padding: 30px;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    input[type="date"]:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+      outline: none;
+    }
+    .settings {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    button {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+    }
+    .result {
+      margin-top: 30px;
+      display: none;
+    }
+    .result-card {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .result-item {
+      text-align: center;
+      padding: 15px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .result-value {
+      font-size: 2em;
+      color: var(--primary);
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .next-birthday {
+      background: #fff3e0;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      color: #ff9800;
+      margin-top: 20px;
+    }
+    .error {
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(244, 67, 54, 0.1);
+    }
+    @media (max-width: 600px) {
+      .container {
+        margin: 10px;
+      }
+      .header h1 {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+  <!-- تضمين مكتبة Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>حاسبة العمر المتطورة</h1>
-        </div>
-
-        <div class="content">
-            <div class="input-group">
-                <label for="birthDate">تاريخ الميلاد:</label>
-                <input type="date" id="birthDate" required>
-                <div class="error" id="dateError"></div>
-            </div>
-
-            <div class="settings">
-                <div class="input-group">
-                    <label for="precision">مستوى الدقة:</label>
-                    <select id="precision">
-                        <option value="basic">أساسي</option>
-                        <option value="detailed">تفصيلي</option>
-                        <option value="advanced">متقدم</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label for="format">نمط العرض:</label>
-                    <select id="format">
-                        <option value="modern">عصري</option>
-                        <option value="classic">تقليدي</option>
-                    </select>
-                </div>
-            </div>
-
-            <button onclick="calculateAge()">احسب العمر</button>
-
-            <div class="result" id="result">
-                <div class="result-card">
-                    <h2>نتيجة حساب العمر</h2>
-                    <div class="result-grid">
-                        <div class="result-item">
-                            <div class="result-value" id="years">0</div>
-                            <div>سنوات</div>
-                        </div>
-                        <div class="result-item">
-                            <div class="result-value" id="months">0</div>
-                            <div>شهور</div>
-                        </div>
-                        <div class="result-item">
-                            <div class="result-value" id="days">0</div>
-                            <div>أيام</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="next-birthday" id="nextBirthday"></div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1 id="headerTitle">حاسبة العمر المتطورة</h1>
     </div>
+    <div class="content">
+      <div class="input-group">
+        <label for="birthDate" id="birthDateLabel">تاريخ الميلاد:</label>
+        <input type="date" id="birthDate" required>
+        <div class="error" id="dateError"></div>
+      </div>
 
-    <script>
-        function calculateAge() {
-            // التحقق من التاريخ
-            const birthDate = new Date(document.getElementById('birthDate').value);
-            const today = new Date();
-            
-            if (!isValidDate(birthDate)) {
-                showError('الرجاء إدخال تاريخ ميلاد صحيح');
-                return;
-            }
+      <!-- قسم لإضافة تواريخ ميلاد إضافية -->
+      <div id="additionalPersons"></div>
+      <button onclick="addPerson()" id="addPersonBtn">إضافة تاريخ ميلاد آخر</button>
 
-            // حساب العمر
-            let years = today.getFullYear() - birthDate.getFullYear();
-            let months = today.getMonth() - birthDate.getMonth();
-            let days = today.getDate() - birthDate.getDate();
+      <div class="settings">
+        <div class="input-group">
+          <label for="precision" id="precisionLabel">مستوى الدقة:</label>
+          <select id="precision">
+            <option value="basic">أساسي</option>
+            <option value="detailed">تفصيلي</option>
+            <option value="advanced">متقدم</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="format" id="formatLabel">نمط العرض:</label>
+          <select id="format">
+            <option value="modern">عصري</option>
+            <option value="classic">تقليدي</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="language" id="languageLabel">اللغة:</label>
+          <select id="language" onchange="updateLanguage()">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
 
-            // تصحيح الحسابات
-            if (days < 0) {
-                months--;
-                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                days += lastMonth.getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
+      <button onclick="calculateAge()" id="calculateBtn">احسب العمر</button>
 
-            // عرض النتائج
-            displayResults(years, months, days);
-            calculateNextBirthday(birthDate);
+      <div class="result" id="result">
+        <div class="result-card">
+          <h2 id="resultTitle">نتيجة حساب العمر</h2>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="result-value" id="years">0</div>
+              <div id="yearsLabel">سنوات</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value" id="months">0</div>
+              <div id="monthsLabel">شهور</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value" id="days">0</div>
+              <div id="daysLabel">أيام</div>
+            </div>
+            <div class="result-item" id="hoursItem" style="display:none;">
+              <div class="result-value" id="hours">0</div>
+              <div id="hoursLabel">ساعات</div>
+            </div>
+            <div class="result-item" id="minutesItem" style="display:none;">
+              <div class="result-value" id="minutes">0</div>
+              <div id="minutesLabel">دقائق</div>
+            </div>
+            <div class="result-item" id="secondsItem" style="display:none;">
+              <div class="result-value" id="seconds">0</div>
+              <div id="secondsLabel">ثواني</div>
+            </div>
+          </div>
+          <!-- عرض التاريخ الهجري -->
+          <div id="hijriDisplay" style="margin-top:20px;"></div>
+        </div>
+        <div class="next-birthday" id="nextBirthday">
+          <span id="countdown"></span>
+        </div>
+        <!-- بطاقة المعلومات التاريخية -->
+        <div class="result-card" id="historicalInfo" style="display:none;">
+          <h2 id="historicalTitle">معلومة تاريخية</h2>
+          <p id="historicalText"></p>
+        </div>
+      </div>
+
+      <!-- عرض المخطط البياني -->
+      <div class="result-card">
+        <h2 id="chartTitle">مقارنة الأعمار على الكواكب</h2>
+        <canvas id="ageChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // مصفوفة لتخزين تواريخ الميلاد الإضافية
+    let additionalBirthDates = [];
+
+    // دالة لإضافة حقل تاريخ ميلاد إضافي
+    function addPerson() {
+      const container = document.getElementById('additionalPersons');
+      const div = document.createElement('div');
+      div.className = 'input-group';
+      const label = document.createElement('label');
+      label.textContent = 'تاريخ ميلاد إضافي:';
+      const input = document.createElement('input');
+      input.type = 'date';
+      input.className = 'additionalBirthDate';
+      input.required = true;
+      div.appendChild(label);
+      div.appendChild(input);
+      container.appendChild(div);
+    }
+
+    // دالة لتحديث لغة الواجهة
+    function updateLanguage() {
+      const lang = document.getElementById('language').value;
+      if(lang === 'en') {
+        document.getElementById('headerTitle').textContent = 'Advanced Age Calculator';
+        document.getElementById('birthDateLabel').textContent = 'Birth Date:';
+        document.getElementById('addPersonBtn').textContent = 'Add Another Birth Date';
+        document.getElementById('precisionLabel').textContent = 'Precision Level:';
+        document.getElementById('formatLabel').textContent = 'Display Format:';
+        document.getElementById('languageLabel').textContent = 'Language:';
+        document.getElementById('calculateBtn').textContent = 'Calculate Age';
+        document.getElementById('resultTitle').textContent = 'Age Calculation Result';
+        document.getElementById('yearsLabel').textContent = 'Years';
+        document.getElementById('monthsLabel').textContent = 'Months';
+        document.getElementById('daysLabel').textContent = 'Days';
+        document.getElementById('hoursLabel').textContent = 'Hours';
+        document.getElementById('minutesLabel').textContent = 'Minutes';
+        document.getElementById('secondsLabel').textContent = 'Seconds';
+        document.getElementById('historicalTitle').textContent = 'Historical Fact';
+        document.getElementById('chartTitle').textContent = 'Planet Age Comparison';
+      } else {
+        document.getElementById('headerTitle').textContent = 'حاسبة العمر المتطورة';
+        document.getElementById('birthDateLabel').textContent = 'تاريخ الميلاد:';
+        document.getElementById('addPersonBtn').textContent = 'إضافة تاريخ ميلاد آخر';
+        document.getElementById('precisionLabel').textContent = 'مستوى الدقة:';
+        document.getElementById('formatLabel').textContent = 'نمط العرض:';
+        document.getElementById('languageLabel').textContent = 'اللغة:';
+        document.getElementById('calculateBtn').textContent = 'احسب العمر';
+        document.getElementById('resultTitle').textContent = 'نتيجة حساب العمر';
+        document.getElementById('yearsLabel').textContent = 'سنوات';
+        document.getElementById('monthsLabel').textContent = 'شهور';
+        document.getElementById('daysLabel').textContent = 'أيام';
+        document.getElementById('hoursLabel').textContent = 'ساعات';
+        document.getElementById('minutesLabel').textContent = 'دقائق';
+        document.getElementById('secondsLabel').textContent = 'ثواني';
+        document.getElementById('historicalTitle').textContent = 'معلومة تاريخية';
+        document.getElementById('chartTitle').textContent = 'مقارنة الأعمار على الكواكب';
+      }
+    }
+
+    // دالة لحساب تفاصيل العمر
+    function calculateAge() {
+      const primaryInput = document.getElementById('birthDate').value;
+      if (!primaryInput) {
+        showError('الرجاء إدخال تاريخ ميلاد صحيح');
+        return;
+      }
+      const birthDate = new Date(primaryInput);
+      const today = new Date();
+      if (!isValidDate(birthDate)) {
+        showError('الرجاء إدخال تاريخ ميلاد صحيح');
+        return;
+      }
+      // إخفاء رسالة الخطأ إن وجدت
+      document.getElementById('dateError').style.display = 'none';
+
+      // حساب تفاصيل العمر للمدخل الأساسي
+      let ageDetails = getAgeDetails(birthDate, today);
+
+      // حساب أعمار الأشخاص الإضافيين
+      const additionalInputs = document.getElementsByClassName('additionalBirthDate');
+      let additionalAges = [];
+      for (let input of additionalInputs) {
+        if(input.value) {
+          const addBirthDate = new Date(input.value);
+          if(isValidDate(addBirthDate)){
+            additionalAges.push(getAgeDetails(addBirthDate, today));
+          }
         }
+      }
 
-        function isValidDate(date) {
-            if (isNaN(date.getTime())) return false;
-            if (date > new Date()) return false;
-            if (date.getFullYear() < 1900) return false;
-            return true;
+      // عرض النتائج للمدخل الأساسي
+      displayResults(ageDetails);
+      // حساب التاريخ الهجري وعرضه
+      const hijri = gregorianToHijri(birthDate);
+      const lang = document.getElementById('language').value;
+      if(lang === 'en'){
+        document.getElementById('hijriDisplay').textContent = `Hijri Birth Date: ${hijri.day}/${hijri.month}/${hijri.year}`;
+      } else {
+        document.getElementById('hijriDisplay').textContent = `تاريخ الميلاد هجري: ${hijri.day}/${hijri.month}/${hijri.year}`;
+      }
+
+      // بدء وتحديث عدّاد عيد الميلاد للمدخل الأساسي
+      startCountdown(birthDate);
+
+      // عرض معلومة تاريخية بناءً على سنة الميلاد
+      displayHistoricalInfo(birthDate.getFullYear());
+
+      // حساب وإظهار عمر الكواكب باستخدام المخطط
+      // إذا كان هناك تواريخ إضافية، نقارن أعمار الجميع
+      if(additionalAges.length > 0) {
+        displayPlanetAgesComparison([ageDetails.years, ...additionalAges.map(a => a.years)]);
+      } else {
+        displayPlanetAges(ageDetails.years);
+      }
+    }
+
+    // دالة مساعدة للتحقق من صحة التاريخ
+    function isValidDate(date) {
+      if (isNaN(date.getTime())) return false;
+      if (date > new Date()) return false;
+      if (date.getFullYear() < 1900) return false;
+      return true;
+    }
+
+    // دالة لحساب تفاصيل العمر (بالسنوات والشهور والأيام والساعات والدقائق والثواني)
+    function getAgeDetails(birthDate, today) {
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+      let hours = today.getHours() - birthDate.getHours();
+      let minutes = today.getMinutes() - birthDate.getMinutes();
+      let seconds = today.getSeconds() - birthDate.getSeconds();
+
+      if (seconds < 0) {
+        seconds += 60;
+        minutes--;
+      }
+      if (minutes < 0) {
+        minutes += 60;
+        hours--;
+      }
+      if (hours < 0) {
+        hours += 24;
+        days--;
+      }
+      if (days < 0) {
+        months--;
+        const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += lastMonth.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+      return { years, months, days, hours, minutes, seconds };
+    }
+
+    // دالة لعرض النتائج
+    function displayResults(details) {
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('years').textContent = details.years;
+      document.getElementById('months').textContent = details.months;
+      document.getElementById('days').textContent = details.days;
+      
+      const precision = document.getElementById('precision').value;
+      if (precision === 'detailed' || precision === 'advanced') {
+        document.getElementById('hoursItem').style.display = 'block';
+        document.getElementById('minutesItem').style.display = 'block';
+        document.getElementById('secondsItem').style.display = 'block';
+        document.getElementById('hours').textContent = details.hours;
+        document.getElementById('minutes').textContent = details.minutes;
+        document.getElementById('seconds').textContent = details.seconds;
+      } else {
+        document.getElementById('hoursItem').style.display = 'none';
+        document.getElementById('minutesItem').style.display = 'none';
+        document.getElementById('secondsItem').style.display = 'none';
+      }
+    }
+
+    // دالة لإظهار رسالة الخطأ
+    function showError(message) {
+      const error = document.getElementById('dateError');
+      error.textContent = message;
+      error.style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+    }
+
+    // دوال عداد عيد الميلاد
+    let countdownInterval;
+    function startCountdown(birthDate) {
+      if(countdownInterval) clearInterval(countdownInterval);
+      const today = new Date();
+      let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+      if(nextBirthday < today) {
+        nextBirthday.setFullYear(today.getFullYear() + 1);
+      }
+      countdownInterval = setInterval(() => {
+        updateCountdown(nextBirthday);
+      }, 1000);
+    }
+    function updateCountdown(nextBirthday) {
+      const now = new Date().getTime();
+      const distance = nextBirthday.getTime() - now;
+      if(distance < 0) {
+        clearInterval(countdownInterval);
+        document.getElementById('countdown').textContent = 'عيد ميلاد سعيد!';
+        return;
+      }
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById('countdown').textContent = `باقي: ${days} أيام، ${hours} ساعات، ${minutes} دقائق، ${seconds} ثواني`;
+    }
+
+    // دالة لتحويل التاريخ الميلادي إلى هجري (تقريبية)
+    function gregorianToHijri(date) {
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const jd = Math.floor((1461 * (year + 4800 + Math.floor((month - 14) / 12))) / 4) +
+                 Math.floor((367 * (month - 2 - 12 * (Math.floor((month - 14) / 12)))) / 12) -
+                 Math.floor((3 * (Math.floor((year + 4900 + Math.floor((month - 14) / 12)) / 100))) / 4) +
+                 day - 32075;
+      const l = jd - 1948440 + 10632;
+      const n = Math.floor((l - 1) / 10631);
+      const l2 = l - 10631 * n + 354;
+      const j = (Math.floor((10985 - l2) / 5316)) * (Math.floor((50 * l2) / 17719)) +
+                (Math.floor(l2 / 5670)) * (Math.floor((43 * l2) / 15238));
+      const l3 = l2 - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) -
+                 (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43)) + 29;
+      const hijriMonth = Math.floor((24 * l3) / 709);
+      const hijriDay = l3 - Math.floor((709 * hijriMonth) / 24);
+      const hijriYear = 30 * n + j - 30;
+      return { day: hijriDay, month: hijriMonth, year: hijriYear };
+    }
+
+    // دالة لعرض معلومة تاريخية (مثال توضيحي)
+    function displayHistoricalInfo(year) {
+      const infoDiv = document.getElementById('historicalInfo');
+      let infoText = '';
+      if(year < 1950) {
+        infoText = 'شهدت هذه الفترة العديد من الأحداث التاريخية الهامة في العالم.';
+      } else if(year < 2000) {
+        infoText = 'شهد القرن العشرين تغيرات كبيرة في مختلف المجالات.';
+      } else {
+        infoText = 'العصر الحديث مليء بالتطورات التكنولوجية والاجتماعية.';
+      }
+      document.getElementById('historicalText').textContent = infoText;
+      infoDiv.style.display = 'block';
+    }
+
+    // دوال حساب عمر الكواكب وعرضها باستخدام Chart.js
+    function displayPlanetAges(earthAge) {
+      // عوامل تحويل: عطارد 0.2408467، الزهرة 0.61519726، المريخ 1.8808158، المشتري 11.862615
+      const mercuryAge = (earthAge / 0.2408467).toFixed(2);
+      const venusAge = (earthAge / 0.61519726).toFixed(2);
+      const marsAge = (earthAge / 1.8808158).toFixed(2);
+      const jupiterAge = (earthAge / 11.862615).toFixed(2);
+      const ctx = document.getElementById('ageChart').getContext('2d');
+      if(window.ageChart) { window.ageChart.destroy(); }
+      window.ageChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['عطارد', 'الزهرة', 'المريخ', 'المشتري'],
+          datasets: [{
+            label: 'العمر على الكواكب (بالسنوات)',
+            data: [mercuryAge, venusAge, marsAge, jupiterAge],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
         }
-
-        function showError(message) {
-            const error = document.getElementById('dateError');
-            error.textContent = message;
-            error.style.display = 'block';
-            document.getElementById('result').style.display = 'none';
+      });
+    }
+    function displayPlanetAgesComparison(ages) {
+      const labels = ages.map((age, index) => `شخص ${index+1}`);
+      const ctx = document.getElementById('ageChart').getContext('2d');
+      if(window.ageChart) { window.ageChart.destroy(); }
+      window.ageChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'العمر بالأرض (بالسنوات)',
+            data: ages,
+            borderColor: '#36A2EB',
+            fill: false
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
         }
-
-        function displayResults(years, months, days) {
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('dateError').style.display = 'none';
-            
-            document.getElementById('years').textContent = years;
-            document.getElementById('months').textContent = months;
-            document.getElementById('days').textContent = days;
-        }
-
-        function calculateNextBirthday(birthDate) {
-            const today = new Date();
-            const nextBirthday = new Date(today.getFullYear(), 
-                                        birthDate.getMonth(), 
-                                        birthDate.getDate());
-            
-            if (nextBirthday < today) {
-                nextBirthday.setFullYear(today.getFullYear() + 1);
-            }
-
-            const daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
-            
-            document.getElementById('nextBirthday').textContent = 
-                `باقي على عيد ميلادك القادم: ${daysUntil} يوم`;
-        }
-    </script>
+      });
+    }
+    
+    // تحديث اللغة عند تحميل الصفحة
+    window.onload = function() {
+      updateLanguage();
+    }
+  </script>
 </body>
 </html>
+
+
+---
+
+هذا الكود يتضمن:
+
+حساب العمر بالتفصيل (سنوات، شهور، أيام، ساعات، دقائق، ثواني) بناءً على مستوى الدقة.
+
+إمكانية إضافة تواريخ ميلاد إضافية للمقارنة.
+
+تحويل التاريخ الميلادي إلى هجري وعرضه.
+
+عدّاد تنازلي يتحدّث كل ثانية حتى عيد الميلاد.
+
+عرض معلومة تاريخية بناءً على سنة الميلاد.
+
+مقارنة عمر الكواكب باستخدام مكتبة Chart.js.
+
+دعم تبديل اللغة بين العربية والإنجليزية.
+
+
+يمكنك تعديل أو تطوير الكود بما يتناسب مع احتياجات مشروعك.
+
