@@ -2,98 +2,251 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>حاسبة العمر المتقدمة</title>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --error-color: #f44336;
+            --success-color: #4CAF50;
+            --background-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--background-gradient);
             min-height: 100vh;
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            line-height: 1.6;
         }
         
         .container {
             background: white;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
         }
         
         h1 {
             color: #2c3e50;
             text-align: center;
             margin-bottom: 30px;
+            font-size: 2.2em;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--primary-color);
         }
         
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #34495e;
             font-weight: bold;
+            font-size: 1.1em;
         }
         
         input[type="date"],
         select {
             width: 100%;
-            padding: 10px;
+            padding: 12px 15px;
             border: 2px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
-            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        input[type="date"]:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            outline: none;
+        }
+        
+        .settings {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid #eee;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .advanced-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
         
         button {
-            background-color: #3498db;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
+            padding: 15px 30px;
+            border-radius: 10px;
             cursor: pointer;
             width: 100%;
-            font-size: 16px;
+            font-size: 1.1em;
             font-weight: bold;
-            transition: background-color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         button:hover {
-            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(1px);
         }
         
         .result {
             margin-top: 30px;
-            padding: 20px;
+            padding: 25px;
             background-color: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 15px;
             display: none;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .result h2 {
             color: #2c3e50;
             margin-top: 0;
             text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
         }
         
         .result-detail {
-            margin: 10px 0;
-            padding: 10px;
+            margin: 15px 0;
+            padding: 15px;
             background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
-        .settings {
+
+        .result-detail .label {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .result-detail .value {
+            color: #2c3e50;
+        }
+
+        .next-birthday {
             margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            padding: 15px;
+            background: linear-gradient(135deg, #fff6e5, #ffefd5);
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .advanced-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -104,109 +257,178 @@
         <div class="input-group">
             <label for="birthDate">تاريخ الميلاد:</label>
             <input type="date" id="birthDate" required>
+            <div class="error-message" id="dateError"></div>
         </div>
         
         <div class="settings">
-            <div class="input-group">
-                <label for="calendar">نظام التقويم:</label>
-                <select id="calendar">
-                    <option value="gregorian">ميلادي</option>
-                    <option value="hijri">هجري</option>
-                </select>
+            <div class="settings-header">
+                <h3>إعدادات متقدمة</h3>
             </div>
             
-            <div class="input-group">
-                <label for="precision">مستوى الدقة:</label>
-                <select id="precision">
-                    <option value="years">سنوات فقط</option>
-                    <option value="months">شهور وسنوات</option>
-                    <option value="days">أيام وشهور وسنوات</option>
-                    <option value="detailed">تفصيلي (مع الساعات والدقائق)</option>
-                </select>
+            <div class="advanced-options">
+                <div class="input-group">
+                    <label for="calendar">نظام التقويم:</label>
+                    <select id="calendar">
+                        <option value="gregorian">ميلادي</option>
+                        <option value="hijri">هجري</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="precision">مستوى الدقة:</label>
+                    <select id="precision">
+                        <option value="years">سنوات فقط</option>
+                        <option value="months">شهور وسنوات</option>
+                        <option value="days">أيام وشهور وسنوات</option>
+                        <option value="detailed">تفصيلي (مع الساعات والدقائق)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="format">تنسيق العرض:</label>
+                    <select id="format">
+                        <option value="standard">قياسي</option>
+                        <option value="detailed">تفصيلي</option>
+                        <option value="friendly">ودي</option>
+                    </select>
+                </div>
             </div>
         </div>
         
         <button onclick="calculateAge()">احسب العمر</button>
         
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>جاري الحساب...</p>
+        </div>
+
         <div class="result" id="result">
             <h2>نتيجة حساب العمر</h2>
-            <div class="result-detail" id="yearsResult"></div>
-            <div class="result-detail" id="monthsResult"></div>
-            <div class="result-detail" id="daysResult"></div>
-            <div class="result-detail" id="detailedResult"></div>
+            <div class="result-detail" id="yearsResult">
+                <span class="label">السنوات:</span>
+                <span class="value"></span>
+            </div>
+            <div class="result-detail" id="monthsResult">
+                <span class="label">الشهور:</span>
+                <span class="value"></span>
+            </div>
+            <div class="result-detail" id="daysResult">
+                <span class="label">الأيام:</span>
+                <span class="value"></span>
+            </div>
+            <div class="result-detail" id="detailedResult">
+                <span class="label">تفاصيل إضافية:</span>
+                <span class="value"></span>
+            </div>
+            <div class="next-birthday" id="nextBirthday"></div>
         </div>
     </div>
 
     <script>
-        function calculateAge() {
-            const birthDate = new Date(document.getElementById('birthDate').value);
+        function validateDate(date) {
             const today = new Date();
-            const precision = document.getElementById('precision').value;
+            if (date > today) {
+                showError('تاريخ الميلاد لا يمكن أن يكون في المستقبل');
+                return false;
+            }
+            if (date.getFullYear() < 1900) {
+                showError('الرجاء إدخال تاريخ ميلاد صحيح (بعد عام 1900)');
+                return false;
+            }
+            return true;
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('dateError');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('dateError').style.display = 'none';
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function getFriendlyAge(years, months, days) {
+            if (years === 0) {
+                if (months === 0) {
+                    return `عمرك ${days} يوم`;
+                }
+                return `عمرك ${months} شهر و ${days} يوم`;
+            }
+            return `عمرك ${years} سنة و ${months} شهر و ${days} يوم`;
+        }
+
+        function calculateNextBirthday(birthDate) {
+            const today = new Date();
+            const nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+            
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+
+            const daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+            return `باقي على عيد ميلادك القادم: ${daysUntilBirthday} يوم`;
+        }
+
+        async function calculateAge() {
+            hideError();
+            const birthDate = new Date(document.getElementById('birthDate').value);
             
             if (isNaN(birthDate.getTime())) {
-                alert('الرجاء إدخال تاريخ ميلاد صحيح');
+                showError('الرجاء إدخال تاريخ ميلاد صحيح');
                 return;
             }
+
+            if (!validateDate(birthDate)) {
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
             
-            const yearsDiff = today.getFullYear() - birthDate.getFullYear();
-            const monthsDiff = today.getMonth() - birthDate.getMonth();
-            const daysDiff = today.getDate() - birthDate.getDate();
+            loading.style.display = 'block';
+            result.style.display = 'none';
+
+            // محاكاة العملية الحسابية
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const today = new Date();
+            const precision = document.getElementById('precision').value;
+            const format = document.getElementById('format').value;
             
-            let years = yearsDiff;
-            let months = monthsDiff;
-            let days = daysDiff;
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
             
-            if (daysDiff < 0) {
+            if (days < 0) {
                 months--;
                 const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, birthDate.getDate());
                 days = Math.floor((today - lastMonth) / (1000 * 60 * 60 * 24));
             }
             
-            if (monthsDiff < 0) {
+            if (months < 0) {
                 years--;
-                months = 12 + monthsDiff;
+                months = 12 + months;
             }
-            
-            const result = document.getElementById('result');
+
             const yearsResult = document.getElementById('yearsResult');
             const monthsResult = document.getElementById('monthsResult');
             const daysResult = document.getElementById('daysResult');
             const detailedResult = document.getElementById('detailedResult');
-            
-            result.style.display = 'block';
-            
+            const nextBirthday = document.getElementById('nextBirthday');
+
             // تنظيف النتائج السابقة
-            yearsResult.textContent = '';
-            monthsResult.textContent = '';
-            daysResult.textContent = '';
-            detailedResult.textContent = '';
-            
-            switch(precision) {
-                case 'years':
-                    yearsResult.textContent = `العمر: ${years} سنة`;
-                    break;
-                    
-                case 'months':
-                    yearsResult.textContent = `العمر: ${years} سنة`;
-                    monthsResult.textContent = `و ${months} شهر`;
-                    break;
-                    
-                case 'days':
-                    yearsResult.textContent = `العمر: ${years} سنة`;
-                    monthsResult.textContent = `و ${months} شهر`;
-                    daysResult.textContent = `و ${days} يوم`;
-                    break;
-                    
-                case 'detailed':
-                    const hours = today.getHours();
-                    const minutes = today.getMinutes();
-                    yearsResult.textContent = `العمر: ${years} سنة`;
-                    monthsResult.textContent = `و ${months} شهر`;
-                    daysResult.textContent = `و ${days} يوم`;
-                    detailedResult.textContent = `و ${hours} ساعة و ${minutes} دقيقة`;
-                    break;
-            }
-        }
-    </script>
-</body>
-</html>
+            yearsResult.querySelector('.value').textContent = '';
+            monthsResult.querySelector('.value').textContent = '';
+            daysResult.querySelector('.value').textContent = '';
+            detailedResult.querySelector('.value').textContent = '';
+
+            switch(format) {
+                case 'standard':
+                    yearsResult.querySelector('.value').textContent = `${years} سنة`;
+                    monthsResult.querySelector('.value').textContent = `${months} شهر`;
+                    daysResult.querySelector('.value').textContent = `${days
