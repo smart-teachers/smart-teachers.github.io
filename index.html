@@ -3,206 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة العمر المتقدمة</title>
+    <title>حاسبة العمر</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            margin: 0;
             padding: 20px;
             direction: rtl;
         }
-        .container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            transition: transform 0.3s ease;
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 90%;
+            max-width: 500px;
         }
-        .container:hover {
-            transform: translateY(-5px);
-        }
-        h1 {
+        h2 {
             text-align: center;
             color: #333;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-        .form-group {
-            margin-bottom: 20px;
+            margin: 0;
         }
         label {
-            display: block;
             font-weight: bold;
+            margin-bottom: 5px;
             color: #555;
-            margin-bottom: 8px;
         }
-        input[type="date"], select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+        input, select, button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
-            background-color: #f9f9f9;
-            transition: border-color 0.3s ease;
-        }
-        input[type="date"]:focus, select:focus {
-            border-color: #4CAF50;
-            outline: none;
         }
         button {
-            width: 100%;
-            padding: 14px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #45a049;
         }
         #result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f1f8e9;
-            border-radius: 8px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            font-weight: bold;
             text-align: center;
-            font-size: 18px;
-            color: #2e7d32;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            color: #333;
         }
-        #result.show {
-            display: block;
-            opacity: 1;
-        }
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
+        @media (max-width: 400px) {
+            form {
+                padding: 15px;
             }
-            h1 {
-                font-size: 24px;
+            h2 {
+                font-size: 1.2em;
             }
-            button, input[type="date"], select {
+            input, select, button {
                 font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>حاسبة العمر المتقدمة</h1>
-        <div class="form-group">
-            <label for="birthdate">تاريخ الميلاد:</label>
-            <input type="date" id="birthdate" required>
-        </div>
-        <div class="form-group">
-            <label for="as_of_date">حساب العمر حتى:</label>
-            <input type="date" id="as_of_date" required>
-        </div>
-        <div class="form-group">
-            <label for="display_format">تنسيق العرض:</label>
-            <select id="display_format">
-                <option value="years">سنوات فقط</option>
-                <option value="years_months">سنوات وأشهر</option>
-                <option value="years_months_days" selected>سنوات وأشهر وأيام</option>
-            </select>
-        </div>
-        <button onclick="calculateAgeHandler()">احسب عمرك الآن</button>
+    <form>
+        <h2>حاسبة العمر</h2>
+        <label for="birthdate">تاريخ الميلاد:</label>
+        <input type="date" id="birthdate" name="birthdate" required>
+        <label for="as_of_date">حساب العمر حتى:</label>
+        <input type="date" id="as_of_date" name="as_of_date" required>
+        <label for="display_format">تنسيق العرض:</label>
+        <select id="display_format" name="display_format">
+            <option value="years">سنوات فقط</option>
+            <option value="years_months">سنوات وأشهر</option>
+            <option value="years_months_days">سنوات وأشهر وأيام</option>
+        </select>
+        <button type="button" onclick="calculateAgeHandler()">حساب العمر</button>
         <div id="result"></div>
-    </div>
-
+    </form>
     <script>
-        // Load Google Fonts dynamically
-        const link = document.createElement('link');
-        link.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap';
-        link.rel = 'stylesheet';
-        document.head.appendChild(link);
-
-        // Set default date to today
-        window.onload = function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('as_of_date').value = today;
-        };
-
         function isLeapYear(year) {
             return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
         }
 
         function getDaysInMonth(month, year) {
             const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            return month === 1 && isLeapYear(year) ? 29 : daysInMonth[month];
+            if (month === 1 && isLeapYear(year)) return 29;
+            return daysInMonth[month];
         }
 
         function calculateAge(birthDate, asOfDate) {
-            let years = asOfDate.getFullYear() - birthDate.getFullYear();
-            let months = asOfDate.getMonth() - birthDate.getMonth();
-            let days = asOfDate.getDate() - birthDate.getDate();
+            let age_years = asOfDate.getFullYear() - birthDate.getFullYear();
+            let birthDateInAsOfYear = new Date(asOfDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+            if (asOfDate < birthDateInAsOfYear) age_years--;
 
-            if (days < 0) {
-                months--;
-                days += getDaysInMonth((asOfDate.getMonth() - 1 + 12) % 12, asOfDate.getFullYear());
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
-            if (asOfDate < birthDate) {
-                return null; // Invalid case
+            let age_months = asOfDate.getMonth() - birthDate.getMonth();
+            if (asOfDate.getDate() < birthDate.getDate()) age_months--;
+            if (age_months < 0) {
+                age_months += 12;
+                age_years--;
             }
 
-            return { years, months, days };
+            let age_days = asOfDate.getDate() - birthDate.getDate();
+            if (age_days < 0) {
+                let prevMonth = asOfDate.getMonth() - 1;
+                let prevYear = asOfDate.getFullYear();
+                if (prevMonth < 0) {
+                    prevMonth = 11;
+                    prevYear--;
+                }
+                age_days += getDaysInMonth(prevMonth, prevYear);
+                age_months--;
+                if (age_months < 0) {
+                    age_months += 12;
+                    age_years--;
+                }
+            }
+
+            return { years: age_years, months: age_months, days: age_days };
         }
 
         function formatAge(age, format) {
-            if (!age) return "تاريخ الميلاد يجب أن يكون قبل تاريخ الحساب.";
-            
-            const yearStr = age.years === 1 ? "سنة" : "سنوات";
-            const monthStr = age.months === 1 ? "شهر" : "أشهر";
-            const dayStr = age.days === 1 ? "يوم" : "أيام";
-
-            switch (format) {
-                case "years":
-                    return `${age.years} ${yearStr}`;
-                case "years_months":
-                    return `${age.years} ${yearStr} و${age.months} ${monthStr}`;
-                default: // years_months_days
-                    return `${age.years} ${yearStr} و${age.months} ${monthStr} و${age.days} ${dayStr}`;
+            let result = "";
+            if (format === "years") {
+                result = age.years + (age.years === 1 ? " سنة" : " سنوات");
+            } else if (format === "years_months") {
+                result = age.years + (age.years === 1 ? " سنة" : " سنوات") + ", " +
+                        age.months + (age.months === 1 ? " شهر" : " أشهر");
+            } else {
+                result = age.years + (age.years === 1 ? " سنة" : " سنوات") + ", " +
+                        age.months + (age.months === 1 ? " شهر" : " أشهر") + ", " +
+                        age.days + (age.days === 1 ? " يوم" : " أيام");
             }
+            return result;
         }
 
         function calculateAgeHandler() {
-            const birthInput = document.getElementById("birthdate").value;
-            const asOfInput = document.getElementById("as_of_date").value;
-            const format = document.getElementById("display_format").value;
+            let birthInput = document.getElementById("birthdate").value;
+            let asOfInput = document.getElementById("as_of_date").value;
+            let format = document.getElementById("display_format").value;
 
             if (!birthInput || !asOfInput) {
-                alert("يرجى إدخال جميع التواريخ المطلوبة.");
+                document.getElementById("result").innerHTML = "يرجى إدخال جميع التواريخ.";
                 return;
             }
 
-            const birthDate = new Date(birthInput);
-            const asOfDate = new Date(asOfInput);
-            const age = calculateAge(birthDate, asOfDate);
-            const resultDiv = document.getElementById("result");
+            let birthDate = new Date(birthInput);
+            let asOfDate = new Date(asOfInput);
 
-            resultDiv.textContent = age ? `عمرك هو: ${formatAge(age, format)}` : formatAge(age, format);
-            resultDiv.classList.add("show");
+            if (birthDate > asOfDate) {
+                document.getElementById("result").innerHTML = "تاريخ الميلاد يجب أن يكون قبل تاريخ الحساب.";
+                return;
+            }
+
+            let age = calculateAge(birthDate, asOfDate);
+            document.getElementById("result").innerHTML = "عمرك هو: " + formatAge(age, format);
         }
+
+        // Set default asOfDate to today
+        let today = new Date();
+        document.getElementById("as_of_date").value = today.toISOString().substr(0, 10);
     </script>
 </body>
 </html>
