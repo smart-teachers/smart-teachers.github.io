@@ -1,225 +1,118 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حاسبة العمر المتقدمة</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
-<script>
-tailwind.config = {
-theme: {
-extend: {
-colors: {
-primary: '#8B5CF6',
-secondary: '#EC4899'
-},
-borderRadius: {
-'none': '0px',
-'sm': '4px',
-DEFAULT: '8px',
-'md': '12px',
-'lg': '16px',
-'xl': '20px',
-'2xl': '24px',
-'3xl': '32px',
-'full': '9999px',
-'button': '8px'
-}
-}
-}
-}
-</script>
-<style>
-:where([class^="ri-"])::before { content: "\f3c2"; }
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة العمر</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            direction: rtl;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-violet-50 to-pink-50 min-h-screen">
-<div class="max-w-6xl mx-auto px-4 py-8">
-<header class="text-center mb-12">
-<h1 class="text-4xl font-bold text-primary mb-4">حاسبة العمر المتقدمة</h1>
-<div class="flex justify-center gap-4 mb-8">
-<button id="themeToggle" class="flex items-center gap-2 px-4 py-2 rounded-button bg-white shadow-sm hover:shadow-md transition-all">
-<i class="ri-sun-line text-primary"></i>
-<span>الوضع النهاري</span>
-</button>
-<button id="langToggle" class="flex items-center gap-2 px-4 py-2 rounded-button bg-white shadow-sm hover:shadow-md transition-all">
-<i class="ri-global-line text-primary"></i>
-<span>العربية</span>
-</button>
-</div>
-</header>
-<main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-<section class="bg-white p-6 rounded-lg shadow-lg">
-<h2 class="text-2xl font-semibold mb-6">أدخل تاريخ ميلادك</h2>
-<form id="ageForm" class="space-y-6">
-<div>
-<label class="block text-sm font-medium mb-2">تاريخ الميلاد</label>
-<input type="date" id="birthDate" class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary">
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">وقت الميلاد (اختياري)</label>
-<input type="time" id="birthTime" class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary">
-</div>
-<button type="submit" class="w-full bg-primary text-white py-3 rounded-button hover:bg-primary/90 transition-colors">
-احسب عمرك
-</button>
-</form>
-</section>
-<section class="bg-white p-6 rounded-lg shadow-lg">
-<h2 class="text-2xl font-semibold mb-6">نتائج العمر</h2>
-<div class="space-y-4" id="results">
-<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-<span>السنوات</span>
-<span id="years" class="text-xl font-bold text-primary">0</span>
-</div>
-<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-<span>الأشهر</span>
-<span id="months" class="text-xl font-bold text-primary">0</span>
-</div>
-<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-<span>الأيام</span>
-<span id="days" class="text-xl font-bold text-primary">0</span>
-</div>
-<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-<span>الساعات</span>
-<span id="hours" class="text-xl font-bold text-primary">0</span>
-</div>
-</div>
-</section>
-</main>
-<section class="mt-12 bg-white p-6 rounded-lg shadow-lg">
-<h2 class="text-2xl font-semibold mb-6">إحصائيات العمر</h2>
-<div id="ageChart" class="w-full h-80"></div>
-</section>
-<section class="mt-12 bg-white p-6 rounded-lg shadow-lg">
-<h2 class="text-2xl font-semibold mb-6">الإعدادات المتقدمة</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div>
-<label class="block text-sm font-medium mb-2">المنطقة الزمنية</label>
-<select id="timezone" class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary">
-<option value="Asia/Riyadh">توقيت مكة المكرمة (GMT+3)</option>
-<option value="GMT">التوقيت العالمي (GMT)</option>
-<option value="Asia/Dubai">توقيت دبي (GMT+4)</option>
-<option value="Africa/Cairo">توقيت القاهرة (GMT+2)</option>
-</select>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">نوع التقويم</label>
-<select id="calendar" class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary">
-<option value="gregorian">التقويم الميلادي</option>
-<option value="hijri">التقويم الهجري</option>
-</select>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">تنسيق التاريخ</label>
-<select id="dateFormat" class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary">
-<option value="DD/MM/YYYY">DD/MM/YYYY</option>
-<option value="MM/DD/YYYY">MM/DD/YYYY</option>
-<option value="YYYY/MM/DD">YYYY/MM/DD</option>
-</select>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">تنسيق الوقت</label>
-<select id="timeFormat" class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary">
-<option value="12">12 ساعة (صباحاً/مساءً)</option>
-<option value="24">24 ساعة</option>
-</select>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">عرض العمر بـ</label>
-<select id="ageDisplay" class="w-full px-4 py-2 rounded-button border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary">
-<option value="detailed">تفصيلي (سنوات، أشهر، أيام)</option>
-<option value="years">السنوات فقط</option>
-<option value="months">الأشهر فقط</option>
-</select>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">تنبيهات أعياد الميلاد</label>
-<div class="flex items-center mt-2">
-<input type="checkbox" id="birthdayAlert" class="w-4 h-4 text-primary border-gray-300 rounded-button focus:ring-primary">
-<label for="birthdayAlert" class="mr-2">تفعيل التنبيهات</label>
-</div>
-</div>
-</div>
-</section>
-<footer class="mt-12 text-center text-gray-600">
-<p>جميع الحقوق محفوظة © 2025</p>
-</footer>
-</div>
-<script>
-const ageForm = document.getElementById('ageForm');
-const birthDate = document.getElementById('birthDate');
-const birthTime = document.getElementById('birthTime');
-const years = document.getElementById('years');
-const months = document.getElementById('months');
-const days = document.getElementById('days');
-const hours = document.getElementById('hours');
-ageForm.addEventListener('submit', (e) => {
-e.preventDefault();
-const birth = new Date(birthDate.value + ' ' + (birthTime.value || '00:00'));
-const now = new Date();
-const diffTime = Math.abs(now - birth);
-const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365));
-const diffMonths = Math.floor((diffTime % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
-const diffDays = Math.floor((diffTime % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-years.textContent = diffYears;
-months.textContent = diffMonths;
-days.textContent = diffDays;
-hours.textContent = diffHours;
-updateChart(diffYears, diffMonths, diffDays);
-});
-function updateChart(years, months, days) {
-const chart = echarts.init(document.getElementById('ageChart'));
-const option = {
-animation: false,
-tooltip: {
-trigger: 'item'
-},
-series: [{
-type: 'pie',
-radius: '70%',
-data: [
-{ value: years, name: 'السنوات', itemStyle: { color: 'rgba(87, 181, 231, 1)' } },
-{ value: months, name: 'الأشهر', itemStyle: { color: 'rgba(141, 211, 199, 1)' } },
-{ value: days, name: 'الأيام', itemStyle: { color: 'rgba(251, 191, 114, 1)' } }
-],
-emphasis: {
-itemStyle: {
-shadowBlur: 10,
-shadowOffsetX: 0,
-shadowColor: 'rgba(0, 0, 0, 0.5)'
-}
-}
-}]
-};
-chart.setOption(option);
-}
-const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', () => {
-const icon = themeToggle.querySelector('i');
-const text = themeToggle.querySelector('span');
-if(icon.classList.contains('ri-sun-line')) {
-icon.classList.replace('ri-sun-line', 'ri-moon-line');
-text.textContent = 'الوضع الليلي';
-} else {
-icon.classList.replace('ri-moon-line', 'ri-sun-line');
-text.textContent = 'الوضع النهاري';
-}
-});
-const langToggle = document.getElementById('langToggle');
-langToggle.addEventListener('click', () => {
-const text = langToggle.querySelector('span');
-text.textContent = text.textContent === 'العربية' ? 'English' : 'العربية';
-});
-</script>
+<body>
+    <form>
+        <h2>حاسبة العمر</h2>
+        <label for="birthdate">تاريخ الميلاد:</label>
+        <input type="date" id="birthdate" name="birthdate" required>
+        <label for="as_of_date">حساب العمر حتى:</label>
+        <input type="date" id="as_of_date" name="as_of_date" value="2025-02-24" required>
+        <label for="display_format">تنسيق العرض:</label>
+        <select id="display_format" name="display_format">
+            <option value="years">سنوات فقط</option>
+            <option value="years_months">سنوات وأشهر</option>
+            <option value="years_months_days">سنوات وأشهر وأيام</option>
+        </select>
+        <button type="button" onclick="calculateAgeHandler()">حساب العمر</button>
+        <div id="result"></div>
+    </form>
+    <script>
+        function isLeapYear(year) {
+            return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        }
+        function getDaysInMonth(month, year) {
+            let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 30, 31, 30, 31, 31];
+            if (month == 1 && isLeapYear(year)) return 29;
+            return daysInMonth[month];
+        }
+        function calculateAge(birthDate, asOfDate) {
+            let age_years = asOfDate.getFullYear() - birthDate.getFullYear();
+            let birthDateInAsOfYear = new Date(asOfDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+            if (asOfDate < birthDateInAsOfYear) age_years--;
+            let age_months = asOfDate.getMonth() - birthDate.getMonth();
+            if (asOfDate.getDate() < birthDate.getDate()) age_months--;
+            if (age_months < 0) { age_months += 12; age_years--; }
+            let age_days = asOfDate.getDate() - birthDate.getDate();
+            if (age_days < 0) {
+                let prevMonth = asOfDate.getMonth() - 1;
+                let prevYear = asOfDate.getFullYear();
+                if (prevMonth < 0) { prevMonth = 11; prevYear--; }
+                age_days += getDaysInMonth(prevMonth, prevYear);
+            }
+            return { years: age_years, months: age_months, days: age_days };
+        }
+        function formatAge(age, format) {
+            if (format === "years") return age.years + (age.years == 1 ? " سنة" : " سنوات");
+            if (format === "years_months") return age.years + (age.years == 1 ? " سنة" : " سنوات") + ", " + 
+                age.months + (age.months == 1 ? " شهر" : " أشهر");
+            return age.years + (age.years == 1 ? " سنة" : " سنوات") + ", " + 
+                age.months + (age.months == 1 ? " شهر" : " أشهر") + ", " + 
+                age.days + (age.days == 1 ? " يوم" : " أيام");
+        }
+        function calculateAgeHandler() {
+            let birthInput = document.getElementById("birthdate").value;
+            let asOfInput = document.getElementById("as_of_date").value;
+            let format = document.getElementById("display_format").value;
+            let birthDate = new Date(birthInput);
+            let asOfDate = new Date(asOfInput);
+            if (birthDate > asOfDate) {
+                document.getElementById("result").innerHTML = "تاريخ الميلاد يجب أن يكون قبل تاريخ الحساب.";
+                return;
+            }
+            let age = calculateAge(birthDate, asOfDate);
+            document.getElementById("result").innerHTML = "عمرك هو: " + formatAge(age, format);
+        }
+        // Set default asOfDate to today
+        let today = new Date();
+        document.getElementById("as_of_date").value = today.toISOString().substr(0, 10);
+    </script>
 </body>
 </html>
