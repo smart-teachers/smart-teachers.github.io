@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة العمر</title>
+    <title>حاسبة العمر المتقدمة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
             padding: 20px;
             direction: rtl;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
         }
         form {
             background-color: white;
@@ -26,22 +31,38 @@
             gap: 15px;
             width: 90%;
             max-width: 500px;
+            transition: background 0.3s;
+        }
+        form.dark {
+            background-color: #34495e;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
         }
         h2 {
             text-align: center;
             color: #333;
-            margin: 0;
+        }
+        h2.dark {
+            color: #ecf0f1;
         }
         label {
             font-weight: bold;
             margin-bottom: 5px;
             color: #555;
         }
+        label.dark {
+            color: #ecf0f1;
+        }
         input, select, button {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input.dark, select.dark, button.dark {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border-color: #7f8c8d;
         }
         button {
             background-color: #4CAF50;
@@ -62,6 +83,46 @@
             font-weight: bold;
             text-align: center;
             color: #333;
+            transition: background 0.3s;
+        }
+        #result.dark {
+            background-color: #2c3e50;
+            border-color: #7f8c8d;
+            color: #ecf0f1;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            text-align: center;
+            padding: 5px;
+            border-radius: 4px;
+            background-color: #f8d7da;
+        }
+        .error.dark {
+            background-color: #c0392b;
+            color: #ecf0f1;
+        }
+        canvas {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+        }
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .theme-toggle.dark {
+            color: #ecf0f1;
+        }
+        .icon {
+            margin-left: 5px;
         }
         @media (max-width: 400px) {
             form {
@@ -77,22 +138,94 @@
     </style>
 </head>
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
     <form>
-        <h2>حاسبة العمر</h2>
-        <label for="birthdate">تاريخ الميلاد:</label>
-        <input type="date" id="birthdate" name="birthdate" required>
-        <label for="as_of_date">حساب العمر حتى:</label>
-        <input type="date" id="as_of_date" name="as_of_date" required>
-        <label for="display_format">تنسيق العرض:</label>
-        <select id="display_format" name="display_format">
+        <h2>حاسبة العمر المتقدمة</h2>
+        <label for="language"><i class="fas fa-language icon"></i>اللغة:</label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="ar">عربي</option>
+            <option value="en">English</option>
+        </select>
+        <label for="birthdate"><i class="fas fa-calendar-alt icon"></i>تاريخ الميلاد:</label>
+        <input type="date" id="birthdate" required>
+        <label for="as_of_date"><i class="fas fa-calendar-check icon"></i>حساب العمر حتى:</label>
+        <input type="date" id="as_of_date" required>
+        <label for="display_format"><i class="fas fa-eye icon"></i>تنسيق العرض:</label>
+        <select id="display_format">
             <option value="years">سنوات فقط</option>
             <option value="years_months">سنوات وأشهر</option>
             <option value="years_months_days">سنوات وأشهر وأيام</option>
+            <option value="years_weeks">سنوات وأسابيع</option>
+            <option value="total_days">إجمالي الأيام</option>
+            <option value="total_hours">إجمالي الساعات</option>
         </select>
-        <button type="button" onclick="calculateAgeHandler()">حساب العمر</button>
+        <button type="button" onclick="calculateAgeHandler()" id="calculate_button"><i class="fas fa-calculator icon"></i>حساب العمر</button>
         <div id="result"></div>
+        <canvas id="ageChart"></canvas>
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Load saved settings or set defaults
+        let language = localStorage.getItem('language') || 'ar';
+        let displayFormat = localStorage.getItem('display_format') || 'years_months_days';
+        let theme = localStorage.getItem('theme') || 'light';
+        document.getElementById('language').value = language;
+        document.getElementById('display_format').value = displayFormat;
+        if (theme === 'dark') {
+            document.body.classList.add('dark');
+            document.querySelector('.theme-toggle i').classList.replace('fa-moon', 'fa-sun');
+            applyDarkMode();
+        }
+        changeLanguage();
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            let themeToggleIcon = document.querySelector('.theme-toggle i');
+            if (document.body.classList.contains('dark')) {
+                themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+                applyDarkMode();
+            } else {
+                themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+                removeDarkMode();
+            }
+        }
+
+        function applyDarkMode() {
+            document.querySelector('form').classList.add('dark');
+            document.querySelector('h2').classList.add('dark');
+            document.querySelectorAll('label').forEach(label => label.classList.add('dark'));
+            document.querySelectorAll('input, select, button').forEach(el => el.classList.add('dark'));
+            document.getElementById('result').classList.add('dark');
+            document.querySelector('.theme-toggle').classList.add('dark');
+        }
+
+        function removeDarkMode() {
+            document.querySelector('form').classList.remove('dark');
+            document.querySelector('h2').classList.remove('dark');
+            document.querySelectorAll('label').forEach(label => label.classList.remove('dark'));
+            document.querySelectorAll('input, select, button').forEach(el => el.classList.remove('dark'));
+            document.getElementById('result').classList.remove('dark');
+            document.querySelector('.theme-toggle').classList.remove('dark');
+        }
+
+        function changeLanguage() {
+            language = document.getElementById('language').value;
+            localStorage.setItem('language', language);
+            if (language === 'ar') {
+                document.getElementById('birthdate_label').innerText = 'تاريخ الميلاد:';
+                document.getElementById('as_of_date_label').innerText = 'حساب العمر حتى:';
+                document.getElementById('display_format_label').innerText = 'تنسيق العرض:';
+                document.getElementById('calculate_button').innerText = 'حساب العمر';
+            } else {
+                document.getElementById('birthdate_label').innerText = 'Birthdate:';
+                document.getElementById('as_of_date_label').innerText = 'Calculate age as of:';
+                document.getElementById('display_format_label').innerText = 'Display format:';
+                document.getElementById('calculate_button').innerText = 'Calculate Age';
+            }
+        }
+
         function isLeapYear(year) {
             return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
         }
@@ -131,31 +264,43 @@
                 }
             }
 
-            return { years: age_years, months: age_months, days: age_days };
+            let totalDays = Math.floor((asOfDate - birthDate) / (1000 * 60 * 60 * 24));
+            let totalHours = totalDays * 24;
+            return { years: age_years, months: age_months, days: age_days, totalDays, totalHours };
         }
 
-        function formatAge(age, format) {
+        function formatAge(age, format, lang) {
             let result = "";
             if (format === "years") {
-                result = age.years + (age.years === 1 ? " سنة" : " سنوات");
+                result = age.years + (lang === 'ar' ? (age.years === 1 ? " سنة" : " سنوات") : (age.years === 1 ? " year" : " years"));
             } else if (format === "years_months") {
-                result = age.years + (age.years === 1 ? " سنة" : " سنوات") + ", " +
-                        age.months + (age.months === 1 ? " شهر" : " أشهر");
-            } else {
-                result = age.years + (age.years === 1 ? " سنة" : " سنوات") + ", " +
-                        age.months + (age.months === 1 ? " شهر" : " أشهر") + ", " +
-                        age.days + (age.days === 1 ? " يوم" : " أيام");
+                result = age.years + (lang === 'ar' ? (age.years === 1 ? " سنة" : " سنوات") : (age.years === 1 ? " year" : " years")) + ", " +
+                        age.months + (lang === 'ar' ? (age.months === 1 ? " شهر" : " أشهر") : (age.months === 1 ? " month" : " months"));
+            } else if (format === "years_months_days") {
+                result = age.years + (lang === 'ar' ? (age.years === 1 ? " سنة" : " سنوات") : (age.years === 1 ? " year" : " years")) + ", " +
+                        age.months + (lang === 'ar' ? (age.months === 1 ? " شهر" : " أشهر") : (age.months === 1 ? " month" : " months")) + ", " +
+                        age.days + (lang === 'ar' ? (age.days === 1 ? " يوم" : " أيام") : (age.days === 1 ? " day" : " days"));
+            } else if (format === "years_weeks") {
+                let weeks = Math.floor(age.totalDays / 7);
+                result = age.years + (lang === 'ar' ? (age.years === 1 ? " سنة" : " سنوات") : (age.years === 1 ? " year" : " years")) + ", " +
+                        weeks + (lang === 'ar' ? (weeks === 1 ? " أسبوع" : " أسابيع") : (weeks === 1 ? " week" : " weeks"));
+            } else if (format === "total_days") {
+                result = age.totalDays + (lang === 'ar' ? (age.totalDays === 1 ? " يوم" : " أيام") : (age.totalDays === 1 ? " day" : " days"));
+            } else if (format === "total_hours") {
+                result = age.totalHours + (lang === 'ar' ? (age.totalHours === 1 ? " ساعة" : " ساعات") : (age.totalHours === 1 ? " hour" : " hours"));
             }
             return result;
         }
 
+        let ageChart = null;
         function calculateAgeHandler() {
             let birthInput = document.getElementById("birthdate").value;
             let asOfInput = document.getElementById("as_of_date").value;
             let format = document.getElementById("display_format").value;
+            let lang = document.getElementById("language").value;
 
             if (!birthInput || !asOfInput) {
-                document.getElementById("result").innerHTML = "يرجى إدخال جميع التواريخ.";
+                document.getElementById("result").innerHTML = `<div class="error${document.body.classList.contains('dark') ? ' dark' : ''}">${lang === 'ar' ? "يرجى إدخال جميع التواريخ." : "Please enter all dates."}</div>`;
                 return;
             }
 
@@ -163,12 +308,40 @@
             let asOfDate = new Date(asOfInput);
 
             if (birthDate > asOfDate) {
-                document.getElementById("result").innerHTML = "تاريخ الميلاد يجب أن يكون قبل تاريخ الحساب.";
+                document.getElementById("result").innerHTML = `<div class="error${document.body.classList.contains('dark') ? ' dark' : ''}">${lang === 'ar' ? "تاريخ الميلاد يجب أن يكون قبل تاريخ الحساب." : "Birthdate must be before the calculation date."}</div>`;
                 return;
             }
 
             let age = calculateAge(birthDate, asOfDate);
-            document.getElementById("result").innerHTML = "عمرك هو: " + formatAge(age, format);
+            let resultText = lang === 'ar' ? "عمرك هو: " : "Your age is: ";
+            document.getElementById("result").innerHTML = resultText + formatAge(age, format, lang);
+
+            // Save settings
+            localStorage.setItem('display_format', format);
+
+            // Draw pie chart
+            if (ageChart) ageChart.destroy();
+            let ctx = document.getElementById("ageChart").getContext("2d");
+            ageChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: lang === 'ar' ? ['سنوات', 'أشهر', 'أيام'] : ['Years', 'Months', 'Days'],
+                    datasets: [{
+                        data: [age.years, age.months, age.days],
+                        backgroundColor: ['#4CAF50', '#2196F3', '#FFC107'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: document.body.classList.contains('dark') ? '#ecf0f1' : '#333'
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         // Set default asOfDate to today
