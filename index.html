@@ -124,6 +124,15 @@
         .icon {
             margin-left: 5px;
         }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+            font-size: 14px;
+        }
+        footer.dark {
+            color: #ecf0f1;
+        }
         @media (max-width: 400px) {
             form {
                 padding: 15px;
@@ -141,16 +150,16 @@
     <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
     <form>
         <h2>حاسبة العمر المتقدمة</h2>
-        <label for="language"><i class="fas fa-language icon"></i>اللغة:</label>
+        <label for="language" id="language_label"><i class="fas fa-language icon"></i>اللغة:</label>
         <select id="language" onchange="changeLanguage()">
             <option value="ar">عربي</option>
             <option value="en">English</option>
         </select>
-        <label for="birthdate"><i class="fas fa-calendar-alt icon"></i>تاريخ الميلاد:</label>
+        <label for="birthdate" id="birthdate_label"><i class="fas fa-calendar-alt icon"></i>تاريخ الميلاد:</label>
         <input type="date" id="birthdate" required>
-        <label for="as_of_date"><i class="fas fa-calendar-check icon"></i>حساب العمر حتى:</label>
+        <label for="as_of_date" id="as_of_date_label"><i class="fas fa-calendar-check icon"></i>حساب العمر حتى:</label>
         <input type="date" id="as_of_date" required>
-        <label for="display_format"><i class="fas fa-eye icon"></i>تنسيق العرض:</label>
+        <label for="display_format" id="display_format_label"><i class="fas fa-eye icon"></i>تنسيق العرض:</label>
         <select id="display_format">
             <option value="years">سنوات فقط</option>
             <option value="years_months">سنوات وأشهر</option>
@@ -163,6 +172,9 @@
         <div id="result"></div>
         <canvas id="ageChart"></canvas>
     </form>
+    <footer>
+        جميع الحقوق محفوظة © 2025<br>برمجة: الأستاذ محمود صديق
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Load saved settings or set defaults
@@ -199,6 +211,7 @@
             document.querySelectorAll('input, select, button').forEach(el => el.classList.add('dark'));
             document.getElementById('result').classList.add('dark');
             document.querySelector('.theme-toggle').classList.add('dark');
+            document.querySelector('footer').classList.add('dark');
         }
 
         function removeDarkMode() {
@@ -208,21 +221,26 @@
             document.querySelectorAll('input, select, button').forEach(el => el.classList.remove('dark'));
             document.getElementById('result').classList.remove('dark');
             document.querySelector('.theme-toggle').classList.remove('dark');
+            document.querySelector('footer').classList.remove('dark');
         }
 
         function changeLanguage() {
             language = document.getElementById('language').value;
             localStorage.setItem('language', language);
             if (language === 'ar') {
-                document.getElementById('birthdate_label').innerText = 'تاريخ الميلاد:';
-                document.getElementById('as_of_date_label').innerText = 'حساب العمر حتى:';
-                document.getElementById('display_format_label').innerText = 'تنسيق العرض:';
-                document.getElementById('calculate_button').innerText = 'حساب العمر';
+                document.getElementById('birthdate_label').innerHTML = '<i class="fas fa-calendar-alt icon"></i>تاريخ الميلاد:';
+                document.getElementById('as_of_date_label').innerHTML = '<i class="fas fa-calendar-check icon"></i>حساب العمر حتى:';
+                document.getElementById('display_format_label').innerHTML = '<i class="fas fa-eye icon"></i>تنسيق العرض:';
+                document.getElementById('calculate_button').innerHTML = '<i class="fas fa-calculator icon"></i>حساب العمر';
+                document.querySelector('h2').innerText = 'حاسبة العمر المتقدمة';
+                document.querySelector('footer').innerHTML = 'جميع الحقوق محفوظة © 2025<br>برمجة: الأستاذ محمود صديق';
             } else {
-                document.getElementById('birthdate_label').innerText = 'Birthdate:';
-                document.getElementById('as_of_date_label').innerText = 'Calculate age as of:';
-                document.getElementById('display_format_label').innerText = 'Display format:';
-                document.getElementById('calculate_button').innerText = 'Calculate Age';
+                document.getElementById('birthdate_label').innerHTML = '<i class="fas fa-calendar-alt icon"></i>Birthdate:';
+                document.getElementById('as_of_date_label').innerHTML = '<i class="fas fa-calendar-check icon"></i>Calculate age as of:';
+                document.getElementById('display_format_label').innerHTML = '<i class="fas fa-eye icon"></i>Display format:';
+                document.getElementById('calculate_button').innerHTML = '<i class="fas fa-calculator icon"></i>Calculate Age';
+                document.querySelector('h2').innerText = 'Advanced Age Calculator';
+                document.querySelector('footer').innerHTML = 'All Rights Reserved © 2025<br>Programmed by: Prof. Mahmoud Sadiq';
             }
         }
 
